@@ -1,4 +1,5 @@
 import sqlite3
+import random
 
 
 db_name = 'blomma.db'
@@ -35,12 +36,31 @@ def Read_users(cursor):
     sql = "SELECT id, name, type FROM users"
     cursor.execute(sql)
     result = cursor.fetchall()
-    print("Users:")
+    print("\nUsers:")
     for row in result:
         print("-" + row[1] + ":" + row[2])
     print("\n")
     return
-    
+
+def Toihin(cursor):
+    i = 0
+    sql = "SELECT id, name FROM users"
+    cursor.execute(sql)
+    result = cursor.fetchall()
+    if not result:
+        i = 1
+    else:
+        i = result[-1][0] + 1
+
+    random_user_id = random.randint(1, i)
+
+    sql = "SELECT id, name FROM users WHERE id=?"
+    cursor.execute(sql, (random_user_id,))
+    random_user = cursor.fetchone()
+    user_id, user_name = random_user
+    print("\nMee Töihin " + user_name + "!\n")
+    return
+
 
 def Main():
     try:
@@ -56,6 +76,9 @@ def Main():
             
             elif(command == "read"):
                 Read_users(cursor)
+
+            elif(command == "meetoihin"):
+                Toihin(cursor)
                 
             elif(command == "quit"):
                 print("Bye!")
